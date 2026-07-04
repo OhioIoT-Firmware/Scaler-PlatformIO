@@ -35,7 +35,6 @@ To override the CA_CERT to point your device to a different MQTT broker, create 
 #endif
 
 
-
 // Override the following with build flags in platformio if you want something different
 
 #ifndef MQTT_HOST
@@ -73,15 +72,24 @@ Controller controller;
 // NOTE: device-side responses go under ~/~/response/...  Nothing here
 // subscribes under that prefix, so the broker can't echo our own responses
 // back into our message dispatcher.  Keep it that way.
+//
+// NOTE: settings echoes go OUT on ~/~/settings (three segments).  The
+// inbound subscription is ~/~/settings/+ (four segments), so the broker
+// can't feed our own echoes back into the settings route either.
 static const char * std_subscription_list[] = {
 	"~/~/settings/+",		// champion only
 	"~/~/command/+",		// scaler and champion
-	"~/~/ota/+",			// champion only
+	"~/~/ota/+",			// champion only — start an OTA
+	"~/~/ota_abort",		// champion only — cancel an in-flight OTA
+	"~/~/ota_accept",		// champion only — accept pending firmware
+	"~/~/ota_rollback",		// champion only — revert to previous image
 	"~/~/clear_counters",	// scaler and champion
 	"~/~/restart",			// scaler and champion
 	"~/broadcast/+",		// delete??
 	nullptr
 };
+
+
 
 
 
@@ -93,6 +101,9 @@ void Controller::setup(const char * wifi_ssid, const char * wifi_pass, const cha
     device_id.get_or_set(deviceID);
 
 	wifi_tools.begin(wifi_ssid, wifi_pass);
+
+	Serial.print("\tusing MQTT host: ");	Serial.println(MQTT_HOST);
+	Serial.print("\tusing MQTT port: ");	Serial.println(MQTT_PORT);
 
 	mqtt.setup(MQTT_HOST, MQTT_PORT, mqtt_user, mqtt_pass, deviceID, CA_CERT); 
 
@@ -108,18 +119,41 @@ void Controller::setup(const char * wifi_ssid, const char * wifi_pass, const cha
 	// subscriptions and any add_command_namespace calls go on top of this.
 	mqtt.set_std_subscriptions(std_subscription_list);
 
-	messages.set_clear_counter_handler([]() {
+	// code is "" when the action was sent untracked (today's existing
+	// behavior, unchanged) — only publish a response when a tracking code
+	// was actually supplied.  Topic is .../response/clear_counters/{code}/success,
+	// deliberately not .../response/command/..., so it can never be picked
+	// up by the generic command-response listener (or vice versa).
+	messages.set_clear_counter_handler([](const char* code) {
 		events.reset_all();   // wipes everything including starts and brown_outs
-		monitor.send_all();   // ship the freshly-cleared state immediately
+		monitor.refresh_counters();
+
+		// if (code[0]) {
+		// 	char response_topic[100] = "~/~/response/clear_counters/";
+		// 	strcat(response_topic, code);
+		// 	strcat(response_topic, "/success");
+		// 	mqtt.publish(response_topic, "");
+		// }
 	});
 
-	// Restart the chip.  Brief delay first so the serial print has a
-	// chance to flush; ESP.restart() yanks everything down hard.  No need
-	// to disconnect mqtt cleanly — we publish at QoS 0 and the broker
-	// will time the session out on its own.  The "starts" counter will
-	// increment on the next boot via monitor.setup, which is all the
-	// confirmation the cloud needs that the restart actually happened.
-	messages.set_restart_handler([]() {
+	// Restart the chip.  If a tracking code was supplied, ack it first —
+	// "received" only, never "success": the device reboots immediately
+	// after, so there's no point at which a "success" could still be sent.
+	// The short delay gives that publish a chance to actually flush over
+	// the wire before ESP.restart() yanks everything down hard. No need
+	// to disconnect mqtt cleanly either way — we publish at QoS 0 and the
+	// broker will time the session out on its own. The "starts" counter
+	// will also increment on the next boot via monitor.setup, which is a
+	// second, independent confirmation the cloud can check.
+	messages.set_restart_handler([](const char* code) {
+
+		// if (code[0]) {
+		// 	char response_topic[100] = "~/~/response/restart/";
+		// 	strcat(response_topic, code);
+		// 	mqtt.publish(response_topic, "");	// 5-segment topic -> implied status "received"
+		// 	delay(200);							// let the ack actually go out before we reboot
+		// }
+
 		Serial.println("\n\t### RESTARTING ###\n");
 		delay(100);
 		ESP.restart();
@@ -139,7 +173,7 @@ void Controller::loop() {
 
 		if (mqtt.is_connected) {
 
-			if (monitor.boot_packet_not_sent) monitor.send_all();	// we don't send this in setup, because mqtt is not connected yet
+			// if (!monitor.boot_packet_sent) monitor.send_all();	// we don't send this in setup, because mqtt is not connected yet
 			monitor.send_heartbeat();
 
 			// do something that requires MQTT
@@ -179,3 +213,5 @@ void Controller::loop() {
 	
 
 }
+
+
