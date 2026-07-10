@@ -1,6 +1,6 @@
-# OhioIoT — Minamlist SDK for Arduino IDE
+# OhioIoT — Minimalist SDK for PlatformIO
 
-The **Minamlist** tier of the OhioIoT device firmware SDK for ESP32.
+The **Minimalist** tier of the OhioIoT device firmware SDK for ESP32.
 
 This code base is designed to help you connect your device to the OhioIoT cloud-based MQTT broker.  You can override those default with build flags in your platformio.ini file.
 
