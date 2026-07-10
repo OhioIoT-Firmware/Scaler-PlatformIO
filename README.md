@@ -1,37 +1,54 @@
-# OhioIoT — Scaler (PlatformIO)
+# OhioIoT — Minamlist SDK for Arduino IDE
 
-The **Scaler** tier of the OhioIoT device firmware SDK for ESP32.
+The **Minamlist** tier of the OhioIoT device firmware SDK for ESP32.
 
-Everything in Minimalist, plus telemetry, app commands, and message routing.
+This code base is designed to help you connect your device to the OhioIoT cloud-based MQTT broker.  You can override those default with build flags in your platformio.ini file.
 
-## Quick start
+*** THIS CODE IS STILL UNDER DEVELOPMENT *** 
+If you have any questions, please send a note from the web page: [OhioIoT.com/contact](https://ohioiot.com/contact).
 
-1. Clone or download this repo:
-   ```
-   git clone https://github.com/OhioIoT-Firmware/Scaler-PlatformIO.git scaler
-   ```
-2. Copy `src/credentials.template` to `src/credentials.h` and fill in your WiFi/MQTT values (credentials.h is git-ignored, so your secrets stay out of the repo).
-3. Build {{QUICK_START}} upload (PlatformIO Upload button, or `pio run -t upload`).
+```cpp
 
-## What's included
+// define your variables
+
+void setup() {
+    controller.setup(WIFI_SSID, WIFI_PASS, MQTT_USER, MQTT_PASS);
+    // add your own code
+}
+
+void loop()  {
+    controller.loop();
+    // add your own code
+}
+
+```
+
+## Quick Start
+
+1. git clone this repo
+2. rename src/credentials.tempate -> credentials.h
+3. Add your WiFi and MQTT credentials to the credentials.h; MQTT credentials found in the Settings tab of the app
+4. Burn to your device
+
+## What's Included
 
 - _certificates
+- _controller
 - device_id
 - wifi_tools
 - mqtt
+*** added with this tier:
 - events
 - messages
 - metrics
 - monitor
 - json
 
-## The controller
-
-You don't need to touch it — but the controller in `lib/_controller/` is plain,
+## The Controller
+The controller quarterbacks the remaining modules so that they can remain relatively unaware of each other.
+You do not need to edit this module for this to work.  It is plain,
 readable source. Open it any time to see how the pieces fit together, or tweak it
 to change how the framework behaves. Nothing here is a black box.
 
-## Feedback
+Feedback is welcome.
 
-This SDK is built to be read. If something's unclear or could be better, open an
-issue — feedback is welcome.

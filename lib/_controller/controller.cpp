@@ -113,6 +113,8 @@ void Controller::setup(const char * wifi_ssid, const char * wifi_pass, const cha
 }
 
 
+static bool namespaces_sent = false;
+
 void Controller::loop() {
 
 	// do something that doesn't require MQTT
@@ -127,14 +129,20 @@ void Controller::loop() {
 
 			// do something that requires MQTT
 
+			if (!namespaces_sent) {
+				mqtt.publish_namespaces();
+				namespaces_sent = true;
+			}
+
 		}
 
 
 	} else {
 
 		if (wifi_tools.reconnect()) {
-			events.increment_ram("wifi_retries");	// @Scaler — RAM only: fires every RECONNECT_INTERVAL while offline, so no NVS write per attempt.  flushed on the reconnect edge below.
+			events.increment_ram("wifi_retries");	// RAM only: fires every RECONNECT_INTERVAL while offline, so no NVS write per attempt.  flushed on the reconnect edge below.
 		}
+		// @Scaler>
 		mqtt.report_disconnect();
 
 	}
