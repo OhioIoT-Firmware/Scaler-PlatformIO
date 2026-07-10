@@ -1,4 +1,4 @@
-# OhioIoT — Minimalist SDK for Arduino IDE
+# OhioIoT — Minimalist SDK for PlatformIO
 
 The **Minimalist** tier of the OhioIoT device firmware SDK for ESP32.
 
