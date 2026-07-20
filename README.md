@@ -4,8 +4,7 @@ The **Minimalist** tier of the OhioIoT device firmware SDK for ESP32.
 
 This code base is designed to help you connect your device to the OhioIoT cloud-based MQTT broker.  You can override those default with build flags in your platformio.ini file.
 
-*** THIS CODE IS STILL UNDER DEVELOPMENT *** 
-If you have any questions, please send a note from the web page: [OhioIoT.com/contact](https://ohioiot.com/contact).
+This code is subject to ongoing development.  If you have any feedback or questions, please send a note from the web page: [ohioiot.com/contact](https://ohioiot.com/contact).
 
 ```cpp
 
