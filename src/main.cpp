@@ -1,7 +1,7 @@
 #include "Arduino.h"
 
 #include "credentials.h"
-#include "controller.h"
+#include "controller/controller.h"
 #include "messages.h"
 #include "mqtt.h"
 

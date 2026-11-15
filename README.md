@@ -26,7 +26,6 @@ Your `src/credentials.h` should look like this:
 ## What's Included
 
 - _certificates
-- _controller
 - device_id
 - wifi_tools
 - mqtt
@@ -41,10 +40,11 @@ Your `src/credentials.h` should look like this:
 
 ## The Controller
 
-The controller quarterbacks the remaining modules so that they can remain relatively unaware of each other.
-You do not need to edit this module for this to work. It is plain,
-readable source. Open it any time to see how the pieces fit together, or tweak it
-to change how the framework behaves. Nothing here is a black box.
+The controller lives in `src/controller/`. It quarterbacks the modules in `modules/` so they can remain relatively unaware of each other.
+
+`src/main.cpp` and `src/controller/` are yours to edit. Leave the folders under `modules/` as they shipped.
+
+You do not need to edit the controller for this to work. It is plain, readable source. Open it any time to see how the pieces fit together, or tweak it to change how the framework behaves. Nothing here is a black box.
 
 Feedback is welcome.
 
