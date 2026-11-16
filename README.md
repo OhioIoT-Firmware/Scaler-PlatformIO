@@ -12,7 +12,7 @@ This code is subject to ongoing development. If you have any feedback or questio
 1. Git clone this repo.
 2. Rename `src/credentials.template` -> `src/credentials.h`.
 3. Add your WiFi and MQTT credentials to `src/credentials.h`.
-4. Burn to your device.
+4. Build and upload (PlatformIO: Upload, or `pio run --target upload`). Open the Serial Monitor at 115200 baud and wait for `mqtt connected`.
 
 Your `src/credentials.h` should look like this:
 
@@ -21,6 +21,19 @@ Your `src/credentials.h` should look like this:
 #define WIFI_PASS  "your-wifi-password"
 #define MQTT_USER  "your-mqtt-user"			// found in the Settings tab of the OhioIoT app
 #define MQTT_PASS  "your-mqtt-password"		// found in the Settings tab of the OhioIoT app
+```
+
+The SDK connects to `mqtt.ohioiot.com` on port **8883** with TLS. The CA certificate is built into the SDK, so you don't download a cert or create a `ca_cert.h` file.
+
+Port **1883** is only for a local, unsecured broker on your own network; it won't work with the OhioIoT broker.
+
+To use a local broker from PlatformIO, uncomment and fill in these flags in `platformio.ini`:
+
+```ini
+build_flags =
+    -D ALLOW_INSECURE_MQTT
+    -D MQTT_HOST=\"192.168.x.x\"
+    -D MQTT_PORT=1883
 ```
 
 ## What's Included
@@ -48,7 +61,7 @@ You do not need to edit the controller for this to work. It is plain, readable s
 
 Feedback is welcome.
 
-*Find video tutorials on making IoT systems at the YouTube channel (<https://youtube.com/@ohioiot>).*
+*Find video tutorials on making IoT systems at the [YouTube channel](https://www.youtube.com/@ohioiot).*
 
-*OhioIoT is an IoT platform designed for small-scale IoT projects (<https://ohioiot.com>).*
+*OhioIoT is an IoT platform designed for [small-scale IoT projects](https://ohioiot.com).*
 
