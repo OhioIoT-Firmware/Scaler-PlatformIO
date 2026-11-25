@@ -51,7 +51,6 @@ The SDK never calls `Serial.begin()`.  This sketch calls it so the Serial Monito
 
 #include "credentials.h"
 #include "controller.h"
-#include "mqtt.h"
 
 
 // inbox for this device
