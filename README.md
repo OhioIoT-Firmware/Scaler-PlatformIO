@@ -1,10 +1,14 @@
 # OhioIoT — Scaler SDK for PlatformIO
 
-The **Scaler** tier of the OhioIoT device firmware SDK for ESP32.
+The **Scaler** tier of the OhioIoT firmware SDK for ESP32.
 
-This code base is designed to help you connect your device to the OhioIoT cloud-based MQTT broker.  WiFi connect and reconnect, and MQTT connect and reconnect, are handled for you (WiFi retries every 10 seconds).
+Connecting is simple: add the library, enter your WiFi and OhioIoT credentials, and upload.  There is no device registration.  The SDK keeps WiFi connected (it retries every 10 seconds) and keeps MQTT connected (it retries with backoff).
 
-This code is subject to ongoing development. If you have any feedback or questions, please send a note from the contact page on the website: [ohioiot.com/contact](https://ohioiot.com/contact).
+Requirements: arduino-esp32 core **2.0.17** and PubSubClient 2.8 or later.  Core 3.x is not supported.
+
+Docs for this tier: [ohioiot.com/docs/code-samples/scaler](https://ohioiot.com/docs/code-samples/scaler).  Using an AI coding tool?  Point it at this repo and [AGENTS.md](AGENTS.md).
+
+This code is still in development.  Questions or feedback: [ohioiot.com/contact](https://ohioiot.com/contact).
 
 
 ## Quick Start
@@ -12,7 +16,7 @@ This code is subject to ongoing development. If you have any feedback or questio
 1. Git clone this repo.
 2. Rename `src/credentials.template` -> `src/credentials.h`.
 3. Add your WiFi and MQTT credentials to `src/credentials.h`.
-4. Build and upload (PlatformIO: Upload, or `pio run --target upload`). Open the Serial Monitor at 115200 baud and wait for `mqtt connected`.
+4. Build and upload (PlatformIO: Upload, or `pio run --target upload`).  Open the Serial Monitor at 115200 baud and wait for `mqtt connected`.
 
 Your `src/credentials.h` should look like this:
 
@@ -23,7 +27,7 @@ Your `src/credentials.h` should look like this:
 #define MQTT_PASS  "your-mqtt-password"  // found in the Settings tab of the OhioIoT app
 ```
 
-The SDK connects to `mqtt.ohioiot.com` on port **8883** with TLS. The CA certificate is built into the SDK, so you don't download a cert or create a `ca_cert.h` file.
+The SDK connects to `mqtt.ohioiot.com` on port **8883** with TLS.  The CA certificate is built into the SDK, so you don't download a cert or create a `ca_cert.h` file.
 
 You can override those defaults with build flags in your platformio.ini file.
 
@@ -110,7 +114,7 @@ The device id is generated once, on first boot, from the hardware random number 
 | `monitor` | publishes identity and a heartbeat |
 | `json` | builds small JSON objects in a char buffer |
 
-## Library layout
+## Layout
 
 The project is laid out like this.
 
@@ -134,13 +138,13 @@ modules/
 
 ## The Controller
 
-The controller lives in `lib/controller/`. It quarterbacks the modules in `modules/` so they can remain relatively unaware of each other.
+The controller lives in `lib/controller/`.  It quarterbacks the modules in `modules/` so they can remain relatively unaware of each other.
 
-`src/main.cpp` and `lib/controller/` are yours to edit. Leave the folders under `modules/` as they shipped. Other libraries can sit in `lib/` beside the controller.
+`src/main.cpp` and `lib/controller/` are yours to edit.  Leave the folders under `modules/` as they shipped.  Other libraries can sit in `lib/` beside the controller.
 
-You do not need to edit the controller for this to work. It is plain, readable source. Open it any time to see how the pieces fit together, or tweak it to change how the framework behaves. Nothing here is a black box.
+You do not need to edit the controller for this to work.  It is plain, readable source.  Open it any time to see how the pieces fit together, or tweak it to change how the framework behaves.  Nothing here is a black box.
 
 *Find video tutorials on making IoT systems at the [YouTube channel](https://www.youtube.com/@ohioiot).*
 
-*OhioIoT is an IoT platform designed for [small-scale IoT projects](https://ohioiot.com).*
+*[OhioIoT](https://ohioiot.com) is an IoT platform.  Built around ESP32.  Works with Raspberry Pi or any MQTT device.*
 

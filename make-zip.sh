@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-rm -f *.zip
+rm -r *.tar.gz
 
 
-zip -r code.zip .gitignore src/ lib/ modules/ -x src/credentials.h
+tar -czf code_xxx.tar.gz --exclude='src/credentials.h' .gitignore platformio.ini src/ lib/ modules/
