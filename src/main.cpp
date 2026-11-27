@@ -64,6 +64,13 @@ void setup() {
 	Serial.begin(115200);
 	Serial.println("\n\n\n+++++++++++  DEVICE BOOT  ++++++++++++++++++++++++++++++++++\n");
 
+	Serial.print("WIFI_SSID: "); Serial.println(WIFI_SSID);
+	// Serial.print("WIFI_PASS: "); Serial.println(WIFI_PASS);
+	Serial.print("MQTT_HOST: "); Serial.println(MQTT_HOST);
+	Serial.print("MQTT_PORT: "); Serial.println(MQTT_PORT);
+	Serial.print("MQTT_USER: "); Serial.println(MQTT_USER);
+	// Serial.print("MQTT_PASS: "); Serial.println(MQTT_PASS);
+
 	controller.setup(WIFI_SSID, WIFI_PASS, MQTT_USER, MQTT_PASS);
 
 	// REGULAR SUBSCRIPTIONS AND MESSAGE HANDLING Part 2 -----------------------------------

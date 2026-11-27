@@ -55,12 +55,7 @@ Controller controller;
 
 
 static const char * std_subscription_list[] = {
-	"~/~/settings/+",		// champion only
 	"~/~/command/+",		// scaler and champion
-	"~/~/ota/+",			// champion only — start an OTA
-	"~/~/ota_abort",		// champion only — cancel an in-flight OTA
-	"~/~/ota_accept",		// champion only — accept pending firmware
-	"~/~/ota_rollback",		// champion only — revert to previous image
 	"~/~/clear_counters",	// scaler and champion
 	"~/~/restart",			// scaler and champion
 	nullptr
